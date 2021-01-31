@@ -2,7 +2,7 @@
  * Takes string in standard dice notation and calculates the probability of each possible value
  * that the sum could be after rolling
  * @param input string consisting of modified standard dice notation (see README.md for details)
- * @returns object, dictionary for each value it's probability, returns false if it fails
+ * @returns array, where each value is the chance of the index being rolled
  */
 function probabilityDistribution (input){
     // remove any spaces from the input
@@ -39,7 +39,7 @@ function probabilityDistribution (input){
     // set all the modifiers together as the cumulative modifier for the roll
     inputAsRoller.setModifier(modifier);
 
-    return inputAsRoller;
+    console.log(inputAsRoller);
 
     // calculate the actual probabilities
     let probabilities = rollerToProbabilities(inputAsRoller);
@@ -49,7 +49,7 @@ function probabilityDistribution (input){
 
 
 function rollerToProbabilities (roller) {
-    let probabilities = rollerToProbabilitiesSimple(roller);
+    let probabilities = probabilityCalcSimple(roller);
     return probabilities;
 }
 
@@ -59,12 +59,21 @@ function rollerToProbabilities (roller) {
  * First implementation of getting the probabilities, given an input roller object.
  * warning: likely very inefficient
  * @param roller
- * @returns object, dictionary for each value it's probability, returns false if it fails
+ * @returns array, where each value is the chance of the index being rolled
  */
 function probabilityCalcSimple (roller) {
-    let probabilities = {};
+    // array where each the value of each index indicates how many times out of the total that is rolled
+    let occurrences = [];
 
-    return probabilities;
+    // we add together the occurrence totals by adding one new roll distribution to the old set
+    // per non-zero item in the array, we do this as adding a die is essentially having the same
+    // situation as before but then rolling that new die after all the rest are rolled
+
+
+    // we calculate the probabilities by dividing the amount per index by the total amount
+    let total; //TODO
+
+    return probabilities; //TODO
 }
 
 
