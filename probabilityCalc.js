@@ -4,7 +4,7 @@
  * @param input string consisting of modified standard dice notation (see README.md for details)
  * @returns array, where each value is the chance of the index being rolled
  */
-function probabilityDistribution (input){
+function probabilityDistribution(input) {
     // remove any spaces from the input
     input = input.replace(/\s+/g, '');
 
@@ -26,9 +26,9 @@ function probabilityDistribution (input){
     // add each individual part to the roller object
     let inputAsRoller = new Roller();
     let modifier = 0;
-    parts.forEach( function(entry){
+    parts.forEach(function (entry) {
         // check if the entry is not a dice but a modifier
-        if (!entry.includes('d')){
+        if (!entry.includes('d')) {
             // modifier found
             modifier += parseInt(entry);
         } else {
@@ -47,12 +47,10 @@ function probabilityDistribution (input){
 }
 
 
-
-function rollerToProbabilities (roller) {
+function rollerToProbabilities(roller) {
     let probabilities = probabilityCalcSimple(roller);
     return probabilities;
 }
-
 
 
 /**
@@ -61,7 +59,7 @@ function rollerToProbabilities (roller) {
  * @param roller obn
  * @returns array, where each value is the chance of the index being rolled
  */
-function probabilityCalcSimple (roller) {
+function probabilityCalcSimple(roller) {
     // array where each the value of each index indicates how many times out of the total that sum is rolled
     let occurrences = [];
 
@@ -84,26 +82,26 @@ function probabilityCalcSimple (roller) {
  * @param sides
  * @returns array, where each value is the chance of the index being rolled
  */
-function getOccurences (dice, sides) {
+function getOccurences(dice, sides) {
     let occurrences = [];
 
     // check if there are dice to roll
-    if (dice === 0){
+    if (dice === 0) {
         return occurrences;
     }
 
     // recursive part
-    if (dice === 1){
+    if (dice === 1) {
         // get occurrences single dice (trivial)
         occurrences[0] = 0;
-        for (let i = 1; i < sides + 1; i++){
+        for (let i = 1; i < sides + 1; i++) {
             occurrences[i] = 1;
         }
     } else {
         // more than 1 dice
         // make the occurrences for the first dice in the set
         let firstOccurrences = [];
-        for (let i = 1; i < sides + 1; i++){
+        for (let i = 1; i < sides + 1; i++) {
             firstOccurrences[i] = 1;
         }
 
@@ -111,18 +109,18 @@ function getOccurences (dice, sides) {
         let otherOccurrences = getOccurences(dice - 1, sides);
 
         // initialise occurrences array
-        let sizeOccurences = sides*dice + 1; // +1 because arrays start at 0
-        for (let i = 0; i < sizeOccurences; i++){
+        let sizeOccurrences = sides * dice + 1; // +1 because arrays start at 0
+        for (let i = 0; i < sizeOccurrences; i++) {
             occurrences[i] = 0;
         }
 
         // then add one copy of each of the set of dice-1 amount of dice to each of possible sums
         for (let i = 1; i < firstOccurrences.length; i++) {
             // add every sum from the other dice to this particular sum to get new values
-            for (let j = 1; j < otherOccurrences.length; j++){
+            for (let j = 1; j < otherOccurrences.length; j++) {
                 // only do something if we don't have 0 of a sum
                 let otherValue = otherOccurrences[j];
-                if (otherValue !== 0){
+                if (otherValue !== 0) {
                     // we get a new sum (index) every time we add values
                     let newIndex = i + j;
 
@@ -137,6 +135,44 @@ function getOccurences (dice, sides) {
     return occurrences;
 }
 
+/**
+ * Combines two occurrence arrays
+ * @param x occurrence array
+ * @param y occurrence array
+ * @returns occurrences array, where each value is the chance of the index being rolled
+ */
+function combineOccurrenceArrays(x, y) {
+    let occurrences = [];
+
+    // initialise occurrences array
+    const sizeOccurrences = x.length + y.length - 1; // -1 as both arrays start at 0
+    for (let i = 0; i < sizeOccurrences; i++) {
+        occurrences[i] = 0;
+    }
+
+    // add a copy of each occurrence of y to each value of x to get the combined occurrence array
+    for (let i = 1; i < x.length; i++) {
+        const firstValue = x[i];
+        // only do something if we don't have 0 of a sum
+        if (firstValue !== 0){
+            // add every sum from the other dice to this particular sum to get new values
+            for (let j = 1; j < y.length; j++) {
+                const otherValue = y[j];
+                // only do something if we don't have 0 of a sum
+                if (otherValue !== 0) {
+                    // we get a new sum (index) every time we add values
+                    const newIndex = i + j;
+
+                    // add it to current occurrences
+                    occurrences[newIndex] += firstValue * otherValue;
+                }
+            }
+        }
+
+    }
+    return occurrences;
+}
+
 
 /**
  * Object to store a set of dice together with a modifier in
@@ -147,19 +183,19 @@ class Roller {
         this.modifier = 0;
     }
 
-    addRoll (x){
+    addRoll(x) {
         this.rolls.push(x);
     }
 
-    setModifier (x){
+    setModifier(x) {
         this.modifier = x;
     }
 
-    getRolls(){
+    getRolls() {
         return this.rolls;
     }
 
-    getModifier(){
+    getModifier() {
         return this.modifier;
     }
 }
