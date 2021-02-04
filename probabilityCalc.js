@@ -108,27 +108,7 @@ function getOccurences(dice, sides) {
         // get the other set of dices
         let otherOccurrences = getOccurences(dice - 1, sides);
 
-        // initialise occurrences array
-        let sizeOccurrences = sides * dice + 1; // +1 because arrays start at 0
-        for (let i = 0; i < sizeOccurrences; i++) {
-            occurrences[i] = 0;
-        }
-
-        // then add one copy of each of the set of dice-1 amount of dice to each of possible sums
-        for (let i = 1; i < firstOccurrences.length; i++) {
-            // add every sum from the other dice to this particular sum to get new values
-            for (let j = 1; j < otherOccurrences.length; j++) {
-                // only do something if we don't have 0 of a sum
-                let otherValue = otherOccurrences[j];
-                if (otherValue !== 0) {
-                    // we get a new sum (index) every time we add values
-                    let newIndex = i + j;
-
-                    // add it to current occurrences
-                    occurrences[newIndex] += otherValue;
-                }
-            }
-        }
+        occurrences = combineOccurrenceArrays(firstOccurrences, otherOccurrences);
     }
     //TODO custom dice (check type number)
 
