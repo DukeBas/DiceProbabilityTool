@@ -8,7 +8,7 @@ function probabilityDistribution(input) {
     // turn the input into a roller object
     let inputAsRoller = new Roller(input);
 
-    console.log(inputAsRoller);
+    // console.log(inputAsRoller);
 
     // calculate the actual probabilities
     let probabilities = rollerToProbabilities(inputAsRoller);
@@ -32,8 +32,6 @@ function probabilityCalcSimple(roller) {
     // get the dice we want the probability for
     let dice = roller.getRolls();
 
-    let probabilities = [];
-
     // we add together the occurrence totals by adding one new roll distribution to the old set
     // per non-zero item in the array, we do this as adding a die is essentially having the same
     // situation as before but then rolling that new die after all the rest are rolled
@@ -41,10 +39,40 @@ function probabilityCalcSimple(roller) {
     // array where each the value of each index indicates how many times out of the total that sum is rolled
     let occurrences = [];
 
-    // we calculate the probabilities by dividing the amount per index by the total amount
-    let total; //TODO
+    // combine all different dice rolls together
+    if (dice.length > 1){
+        // we need to combine multiple types/sets of dice
 
-    return probabilities; //TODO
+        let occurrenceSet = [];
+        dice.forEach(function (diceSet) {
+            const dice = parseInt(diceSet.dice);
+            const sides = parseInt(diceSet.sides);
+            occurrenceSet.push(getOccurrences(dice, sides));
+        });
+
+        // combine all the occurrences together
+        occurrences = occurrenceSet.reduce(combineOccurrenceArrays);
+    } else {
+        // single type of dice
+        const dice = dice[0].dice; //amount of dice
+        const sides = dice[0].sides;
+        occurrences = getOccurrences(dice, sides);
+    }
+
+    // we calculate the probabilities by dividing the amount per index by the total amount
+    let total = 0;
+    for (let i = 0; i < occurrences.length; i++){
+        total += occurrences[i];
+    }
+    //TODO if this is too slow calculate the total based on the number of dice and sides
+
+    // calculate probabilities by doing occurrence per sum divided by the total sum possibilities
+    let probabilities = [];
+    for (let i = 0; i < occurrences.length; i++){
+        probabilities[i] = occurrences[i] / total;
+    }
+
+    return probabilities;
 }
 
 
@@ -54,7 +82,7 @@ function probabilityCalcSimple(roller) {
  * @param sides
  * @returns array, where each value is the chance of the index being rolled
  */
-function getOccurences(dice, sides) {
+function getOccurrences(dice, sides) {
     let occurrences = [];
 
     // check if there are dice to roll
@@ -78,7 +106,7 @@ function getOccurences(dice, sides) {
         }
 
         // get the other set of dices
-        let otherOccurrences = getOccurences(dice - 1, sides);
+        let otherOccurrences = getOccurrences(dice - 1, sides);
 
         occurrences = combineOccurrenceArrays(firstOccurrences, otherOccurrences);
     }
@@ -123,6 +151,7 @@ function combineOccurrenceArrays(x, y) {
         }
 
     }
+
     return occurrences;
 }
 
@@ -167,7 +196,7 @@ class Roller {
                 let entrySplit = entry.split("d");
 
                 let dice = entrySplit[0];
-                let side = entrySplit[1];
+                let sides = entrySplit[1];
 
                 //TODO implement custom dice part
                 let custom = false
@@ -179,7 +208,7 @@ class Roller {
 
                 let diceObj = {
                     dice: dice,
-                    side: side,
+                    sides: sides,
                     keep: keep,
                     drop: drop,
                     custom: custom,
