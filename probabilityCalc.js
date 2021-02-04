@@ -5,39 +5,8 @@
  * @returns array, where each value is the chance of the index being rolled
  */
 function probabilityDistribution(input) {
-    // remove any spaces from the input
-    input = input.replace(/\s+/g, '');
-
-    // add a + before -'s so the string can be properly separated into parts
-    input = input.replace('-', '+-');
-
-    // separate everything, turning each of the dice parts into it's own thing
-    let parts;
-    try {
-        parts = input.split('+');
-    } catch {
-        // if the input cannot be turned into parts, fail
-        return false;
-    }
-
-    // remove empty parts from the array
-    parts = parts.filter(Boolean);
-
-    // add each individual part to the roller object
-    let inputAsRoller = new Roller();
-    let modifier = 0;
-    parts.forEach(function (entry) {
-        // check if the entry is not a dice but a modifier
-        if (!entry.includes('d')) {
-            // modifier found
-            modifier += parseInt(entry);
-        } else {
-            // dice roll of some kind
-            inputAsRoller.addRoll(entry);
-        }
-    });
-    // set all the modifiers together as the cumulative modifier for the roll
-    inputAsRoller.setModifier(modifier);
+    // turn the input into a roller object
+    let inputAsRoller = new Roller(input);
 
     console.log(inputAsRoller);
 
@@ -60,21 +29,24 @@ function rollerToProbabilities(roller) {
  * @returns array, where each value is the chance of the index being rolled
  */
 function probabilityCalcSimple(roller) {
-    // array where each the value of each index indicates how many times out of the total that sum is rolled
-    let occurrences = [];
-
+    // get the dice we want the probability for
     let dice = roller.getRolls();
+
+    let probabilities = [];
 
     // we add together the occurrence totals by adding one new roll distribution to the old set
     // per non-zero item in the array, we do this as adding a die is essentially having the same
     // situation as before but then rolling that new die after all the rest are rolled
 
+    // array where each the value of each index indicates how many times out of the total that sum is rolled
+    let occurrences = [];
 
     // we calculate the probabilities by dividing the amount per index by the total amount
     let total; //TODO
 
     return probabilities; //TODO
 }
+
 
 /**
  * Recursive function to get the total occurences of each sum for a set of dice
@@ -115,6 +87,7 @@ function getOccurences(dice, sides) {
     return occurrences;
 }
 
+
 /**
  * Combines two occurrence arrays
  * @param x occurrence array
@@ -134,7 +107,7 @@ function combineOccurrenceArrays(x, y) {
     for (let i = 1; i < x.length; i++) {
         const firstValue = x[i];
         // only do something if we don't have 0 of a sum
-        if (firstValue !== 0){
+        if (firstValue !== 0) {
             // add every sum from the other dice to this particular sum to get new values
             for (let j = 1; j < y.length; j++) {
                 const otherValue = y[j];
@@ -158,9 +131,64 @@ function combineOccurrenceArrays(x, y) {
  * Object to store a set of dice together with a modifier in
  */
 class Roller {
-    constructor() {
+    constructor(input) {
         this.rolls = [];
         this.modifier = 0;
+
+        // remove any spaces from the input
+        input = input.replace(/\s+/g, '');
+
+        // add a + before -'s so the string can be properly separated into parts
+        input = input.replace('-', '+-');
+
+        // separate everything, turning each of the dice parts into it's own thing
+        let parts;
+        try {
+            parts = input.split('+');
+        } catch {
+            // if the input cannot be turned into parts, fail
+            return false;
+        }
+
+        // remove empty parts from the array
+        parts = parts.filter(Boolean);
+
+        // variable to store location of constructor
+        const constr = this;
+
+        parts.forEach(function (entry) {
+            // check if the entry is not a dice but a modifier
+            if (!entry.includes('d')) {
+                // modifier found
+                constr.modifier += parseInt(entry);
+            } else {
+                // found dice roll of some kind
+                //TODO FIX: RIGHT NOW WE ASSUME THAT THE DICE ROLL IS ALWAYS OF THE FORMAT xdy
+                let entrySplit = entry.split("d");
+
+                let dice = entrySplit[0];
+                let side = entrySplit[1];
+
+                //TODO implement custom dice part
+                let custom = false
+                let customConfig = false
+
+                //TODO implement keep & drop
+                let keep = 0;
+                let drop = 0;
+
+                let diceObj = {
+                    dice: dice,
+                    side: side,
+                    keep: keep,
+                    drop: drop,
+                    custom: custom,
+                    customConfig: customConfig
+                };
+
+                constr.rolls.push(diceObj);
+            }
+        });
     }
 
     addRoll(x) {

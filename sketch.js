@@ -5,10 +5,7 @@ function setup() {
     var triple = getOccurences(3, 6);
     var quad = getOccurences(4, 6);
 
-    console.log(combineOccurrenceArrays(single, double))
-    console.log(combineOccurrenceArrays(double, single))
-    console.log(triple)
-    console.log("--")
+    console.log(probabilityDistribution("2d20-2+3+1d4"))
 }
 
 function draw() {
