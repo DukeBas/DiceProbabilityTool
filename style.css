@@ -1,0 +1,40 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: 1.5fr 0.5fr;
+    grid-template-rows: 0.2fr 2.5fr;
+    gap: 0px 0px;
+    grid-template-areas:
+    "Title Links"
+    "Graph Parameters";
+}
+
+.Graph {
+    grid-area: Graph;
+}
+
+.Title {
+    grid-area: Title;
+}
+
+.Links {
+    grid-area: Links;
+}
+
+.Parameters {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 0.4fr 1fr;
+    gap: 0px 0px;
+    grid-template-areas:
+    "Help-menu"
+    "Input";
+    grid-area: Parameters;
+}
+
+.Help-menu {
+    grid-area: Help-menu;
+}
+
+.Input {
+    grid-area: Input;
+}
