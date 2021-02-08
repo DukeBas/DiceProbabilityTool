@@ -77,9 +77,9 @@ function probabilityCalcSimple(roller) {
 
 
 /**
- * Recursive function to get the total occurences of each sum for a set of dice
- * @param dice
- * @param sides
+ * Recursive function to get the total occurrences of each sum for a set of dice
+ * @param dice amount
+ * @param sides of dice
  * @returns array, where each value is the chance of the index being rolled
  */
 function getOccurrences(dice, sides) {
@@ -115,6 +115,55 @@ function getOccurrences(dice, sides) {
     return occurrences;
 }
 
+
+/**
+ * Generates the occurrences for a set of dice that use drop lowest and drop highest by generating all possible scenarios
+ * very inefficient
+ * @param dice amount
+ * @param sides of dice
+ * @param dl number of lowest dice to drop
+ * @param dh number of highest dice to drop
+ * @returns array, where each value is the chance of the index being rolled
+ */
+function getOccurrencesDK(dice, sides, dl, dh) {
+    let occurrences = [];
+
+    // check if there are dice to roll
+    if (dice === 0) {
+        return occurrences;
+    }
+
+    //TODO
+
+    return occurrences;
+}
+
+/**
+ * Given a set of numbers and how many of the lowest to drop and keep, calculate the sum of the dice left
+ * @param arr set of input numbers
+ * @param dl number of lowest dice to drop
+ * @param dh number of highest dice to drop
+ * @returns sum (int)
+ */
+function diceSetDrop(arr, dl, dh){
+    let sum;
+
+    // check if there will be any dice left after drop and keep
+    if (dl + dh >= arr.length){
+        return sum;
+    }
+
+    //first sort the array
+    arr.sort();
+
+    // remove the first dl number of dice and the last dh from array
+    const dropped = arr.slice(dl, arr.length - dh);
+
+    // sum up all the values in the array
+    sum = dropped.reduce((a, b) => a + b, 0);
+
+    return sum;
+}
 
 /**
  * Combines two occurrence arrays
@@ -203,6 +252,7 @@ class Roller {
                 let customConfig = false
 
                 //TODO implement keep & drop
+                // d = drop lowest, dl = drop, dh = drop highest
                 let keep = 0;
                 let drop = 0;
 
