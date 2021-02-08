@@ -145,7 +145,7 @@ function getOccurrencesDK(dice, sides, dl, dh) {
  * @param dh number of highest dice to drop
  * @returns sum (int)
  */
-function diceSetDrop(arr, dl, dh){
+function rolledSetDrop(arr, dl, dh){
     let sum;
 
     // check if there will be any dice left after drop and keep
