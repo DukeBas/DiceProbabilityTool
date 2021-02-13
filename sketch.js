@@ -10,6 +10,8 @@ function setup() {
     console.log(getOccurrencesDrop(2,4,1,0));
     console.log(getOccurrencesDrop(2,4,0,1));
     console.log(getOccurrencesDrop(2,4,1,1));
+    console.log(getOccurrencesDrop(4,10,3,0));
+    console.log(getOccurrencesDrop(5,10,4,0));
 }
 
 function draw() {
