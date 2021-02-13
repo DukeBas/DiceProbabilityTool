@@ -123,9 +123,10 @@ function getOccurrences(dice, sides) {
  * @param sides of dice
  * @param dl number of lowest dice to drop
  * @param dh number of highest dice to drop
+ * @param arr used in recursion DO NOT SPECIFY IN FIRST CALL
  * @returns array, where each value is the chance of the index being rolled
  */
-function getOccurrencesDK(dice, sides, dl, dh) {
+function getOccurrencesDrop(dice, sides, dl, dh, arr) {
     let occurrences = [];
 
     // check if there are dice to roll
@@ -133,7 +134,50 @@ function getOccurrencesDK(dice, sides, dl, dh) {
         return occurrences;
     }
 
-    //TODO
+    // check if we are in the first call
+    if (arr === undefined){
+        // we are in the first call
+        arr = [];
+    }
+
+    // initialize occurrences
+    let lenOccurrences = sides * (dice - dl - dh) + 1;
+    for (let i = 0; i < lenOccurrences; i++){
+        occurrences[i] = 0;
+    }
+
+    // recursively generate arrays to simulate all possible scenarios
+    // when the arrays are filled, do the dropping and add the sum for that scenario to occurrence array
+    if (arr.length + 1 >= dice){
+        // one die left to simulate out of the set
+
+        for (let i = 1; i < sides + 1; i++){
+            // calculate the sum of the set of dice with dropping
+            let currentArr = arr.slice();
+            currentArr.push(i);
+            const index = rolledSetDrop(currentArr, dl, dh);
+            occurrences[index] += 1;
+        }
+    } else {
+        // more than one dice left to simulate
+
+        // array to hold to occurrence arrays per part of the step
+        let parts = [];
+        for (let i = 1; i < sides + 1; i++){
+            let currentArr = arr.slice();
+            currentArr.push(i);
+            parts.push(getOccurrencesDrop(dice, sides, dl, dh, currentArr));
+        }
+
+        // console.log(parts)
+
+        // sum up all the parts to get the total
+        for (let i = 1; i < parts[0].length; i++){
+            for (let j = 0; j < parts.length; j++){
+                occurrences[i] += parts[j][i];
+            }
+        }
+    }
 
     return occurrences;
 }
