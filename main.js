@@ -46,21 +46,4 @@ function init(){
             }
         }
     });
-
-    // adding resizing chart when window resizes
-    let canvas = document.getElementById('canvas'),
-        context = canvas.getContext('2d');
-
-    // Event handler to resize the canvas when the document view is changed
-    window.addEventListener('resize', resizeCanvas, false);
-
-    function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        // redraw chart
-        chart.update();
-    }
-
-    //TODO fix the size and updating of the chart
 }
