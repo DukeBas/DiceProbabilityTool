@@ -105,6 +105,8 @@ function getOccurrencesDrop(dice, sides, dl, dh, arr) {
         occurrences[i] = 0;
     }
 
+    // console.log(arr)
+
     // recursively generate arrays to simulate all possible scenarios
     // when the arrays are filled, do the dropping and add the sum for that scenario to occurrence array
     if (arr.length + 1 >= dice){
@@ -157,7 +159,7 @@ function rolledSetDrop(arr, dl, dh){
     }
 
     //first sort the array
-    arr.sort();
+    arr.sort(compareNumbers);
 
     // remove the first dl number of dice and the last dh from array
     const dropped = arr.slice(dl, arr.length - dh);
@@ -167,6 +169,7 @@ function rolledSetDrop(arr, dl, dh){
 
     return sum;
 }
+
 
 /**
  * Combines two occurrence arrays
@@ -310,22 +313,35 @@ class Roller {
 
             let occurrenceSet = [];
             dice.forEach(function (diceSet) {
-                const dice = parseInt(diceSet.dice);
-                const sides = parseInt(diceSet.sides);
-                occurrenceSet.push(getOccurrences(dice, sides));
+                const d = parseInt(diceSet.dice);
+                const s = parseInt(diceSet.sides);
+                occurrenceSet.push(getOccurrences(d, s));
             });
 
             // combine all the occurrences together
             occurrences = occurrenceSet.reduce(combineOccurrenceArrays);
         } else {
             // single type of dice
-            const dice = dice[0].dice; //amount of dice
-            const sides = dice[0].sides;
-            occurrences = getOccurrences(dice, sides);
+            const d = parseInt(dice[0].dice); //amount of dice
+            const s = parseInt(dice[0].sides);
+            occurrences = getOccurrences(d, s);
         }
 
         let probabilities = occurrencesToProbabilities(occurrences);
 
         return probabilities;
+    }
+}
+
+/**
+ * function to compare numbers, for use in sorting arrays of numbers
+ */
+function compareNumbers(a, b) {
+    if (a < b) {
+        return -1;
+    } else if (a > b) {
+        return 1;
+    } else {
+        return 0;
     }
 }
