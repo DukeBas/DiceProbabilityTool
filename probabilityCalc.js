@@ -11,73 +11,32 @@ function probabilityDistribution(input) {
     // console.log(inputAsRoller);
 
     // calculate the actual probabilities
-    let probabilities = rollerToProbabilities(inputAsRoller);
-    return probabilities;
-}
-
-
-function rollerToProbabilities(roller) {
-    let probabilities = probabilityCalcSimple(roller);
-    return probabilities;
+    return inputAsRoller.getProbabilities();
 }
 
 
 /**
- * First implementation of getting the probabilities, given an input roller object.
- * warning: likely not very efficient
- * @param roller obn
- * @returns array, where each value is the chance of the index being rolled
+ * Turns a given occurrences array into a probability array
+ * @param occ
  */
-function probabilityCalcSimple(roller) {
-    // get the dice we want the probability for
-    let dice = roller.getRolls();
-
-    // we add together the occurrence totals by adding one new roll distribution to the old set
-    // per non-zero item in the array, we do this as adding a die is essentially having the same
-    // situation as before but then rolling that new die after all the rest are rolled
-
-    // array where each the value of each index indicates how many times out of the total that sum is rolled
-    let occurrences = [];
-
-    // combine all different dice rolls together
-    if (dice.length > 1){
-        // we need to combine multiple types/sets of dice
-
-        let occurrenceSet = [];
-        dice.forEach(function (diceSet) {
-            const dice = parseInt(diceSet.dice);
-            const sides = parseInt(diceSet.sides);
-            occurrenceSet.push(getOccurrences(dice, sides));
-        });
-
-        // combine all the occurrences together
-        occurrences = occurrenceSet.reduce(combineOccurrenceArrays);
-    } else {
-        // single type of dice
-        const dice = dice[0].dice; //amount of dice
-        const sides = dice[0].sides;
-        occurrences = getOccurrences(dice, sides);
-    }
-
+function occurrencesToProbabilities(occ){
     // we calculate the probabilities by dividing the amount per index by the total amount
     let total = 0;
-    for (let i = 0; i < occurrences.length; i++){
-        total += occurrences[i];
+    for (let i = 0; i < occ.length; i++){
+        total += occ[i];
     }
-    //TODO if this is too slow calculate the total based on the number of dice and sides
 
     // calculate probabilities by doing occurrence per sum divided by the total sum possibilities
     let probabilities = [];
-    for (let i = 0; i < occurrences.length; i++){
-        probabilities[i] = occurrences[i] / total;
+    for (let i = 0; i < occ.length; i++){
+        probabilities[i] = occ[i] / total;
     }
 
     return probabilities;
 }
 
-
 /**
- * Recursive function to get the total occurrences of each sum for a set of dice
+ * Simple recursive function to get the total occurrences of each sum for a set of dice
  * @param dice amount
  * @param sides of dice
  * @returns array, where each value is the chance of the index being rolled
@@ -276,7 +235,7 @@ class Roller {
         parts = parts.filter(Boolean);
 
         // variable to store location of constructor
-        const constr = this;
+        const constr = this;   // for scope
 
         parts.forEach(function (entry) {
             // check if the entry is not a dice but a modifier
@@ -328,5 +287,45 @@ class Roller {
 
     getModifier() {
         return this.modifier;
+    }
+
+    /**
+     * Calculate probability of each sum for our dice set
+     * @returns array with probabilities, index indicating the sum
+     */
+    getProbabilities() {
+        // get the dice we want the probability for
+        let dice = this.getRolls();
+
+        // we add together the occurrence totals by adding one new roll distribution to the old set
+        // per non-zero item in the array, we do this as adding a die is essentially having the same
+        // situation as before but then rolling that new die after all the rest are rolled
+
+        // array where each the value of each index indicates how many times out of the total that sum is rolled
+        let occurrences = [];
+
+        // combine all different dice rolls together
+        if (dice.length > 1){
+            // we need to combine multiple types/sets of dice
+
+            let occurrenceSet = [];
+            dice.forEach(function (diceSet) {
+                const dice = parseInt(diceSet.dice);
+                const sides = parseInt(diceSet.sides);
+                occurrenceSet.push(getOccurrences(dice, sides));
+            });
+
+            // combine all the occurrences together
+            occurrences = occurrenceSet.reduce(combineOccurrenceArrays);
+        } else {
+            // single type of dice
+            const dice = dice[0].dice; //amount of dice
+            const sides = dice[0].sides;
+            occurrences = getOccurrences(dice, sides);
+        }
+
+        let probabilities = occurrencesToProbabilities(occurrences);
+
+        return probabilities;
     }
 }
