@@ -7,12 +7,15 @@
     <title>dice probability tool</title>
     <link rel="stylesheet" href="style.css">
     <script src="probabilityCalc.js"></script>
+    <script src="libraries/chart/Chart.js"></script>
     <script src="main.js"></script>
 </head>
 
-<body>
+<body onload="init()">
 <div class="grid-container">
-    <div class="Graph">1</div>
+    <div class="Graph" style="position: relative; height:93.75vh; width:75vw">
+        <canvas id="canvas"></canvas>
+    </div>
     <div class="Title">2</div>
     <div class="Links">3</div>
     <div class="Parameters">
