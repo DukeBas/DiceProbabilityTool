@@ -30,6 +30,9 @@ function occurrencesToProbabilities(occ){
     let probabilities = [];
     for (let i = 0; i < occ.length; i++){
         probabilities[i] = occ[i] / total;
+        if (probabilities[i] === 0){
+            probabilities[i] = undefined;
+        }
     }
 
     return probabilities;

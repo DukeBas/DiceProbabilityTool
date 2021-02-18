@@ -39,6 +39,7 @@ function makeChart(rollers){
             }
         }
 
+        // prevent the line bending
         dataObj.lineTension = 0;
 
         // get max
