@@ -8,8 +8,7 @@ function init(){
     //TODO don't show 0s at the beginning
 
     //temp
-    let testInput = "2d6"
-    let roller = new Roller(testInput);
+    let testInput = [new Roller("1d20"), new Roller("2d10"), new Roller("5d4")];
 
-    var chart = new Chart(ctx, makeChart(roller));
+    var chart = new Chart(ctx, makeChart(testInput));
 }

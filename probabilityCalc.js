@@ -218,6 +218,7 @@ class Roller {
     constructor(input) {
         this.rolls = [];
         this.modifier = 0;
+        this.originalInput = input;
 
         // remove any spaces from the input
         input = input.replace(/\s+/g, '');
