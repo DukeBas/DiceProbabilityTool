@@ -4,9 +4,7 @@
  * @param options, object with possible graph options. Options:
  *      percentage          (= true)
  *      precision           (= 3)
- *      startY-axisAt0      (= true)
- *      EndY-axisAt1        (= false)
- *
+ *      startYaxisAt0      (= true)
  * @returns chart data as object
  */
 function makeChart(rollers, options) {
@@ -19,6 +17,7 @@ function makeChart(rollers, options) {
         rollers.push(roller);
     }
 
+
     // define our chart options
     if (options === undefined) {
         // no options were given, set all to default
@@ -30,9 +29,24 @@ function makeChart(rollers, options) {
     } else {
         // at least some options were given
         // check for each option if a value was defined, else go to some default value
-        if (options.scales === undefined) {
-            options.scales = defaultChartOptions.scales;
+        if (options.startYaxisAt0 === undefined) {
+            options.scales = {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: defaultChartOptions.scales.yAxes[0].ticks.beginAtZero,
+                    }
+                }]
+            }
+        } else {
+            options.scales = {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: options.startYaxisAt0,
+                    }
+                }]
+            }
         }
+
         if (options.percentage === undefined) {
             options.percentage = defaultChartOptions.percentage;
         }
@@ -41,6 +55,11 @@ function makeChart(rollers, options) {
         }
         if (options.tooltips === undefined) {
             options.tooltips = defaultChartOptions.tooltips;
+        }
+
+        // add percentage signs y-axis
+        if (options.percentage){
+            options.scales.yAxes[0].ticks.callback = defaultChartOptions.scales.yAxes[0].ticks.callback;
         }
     }
     // options we always want
@@ -130,7 +149,7 @@ function makeChart(rollers, options) {
     return chartParams;
 }
 
-// default chart options
+// default chart options for when certain options are not defined
 let defaultChartOptions = {
     percentage: true,
     precision: 2,
@@ -152,5 +171,5 @@ let defaultChartOptions = {
                 return (Chart.defaults.global.tooltips.callbacks.label(tooltip, data) + " %");
             }
         }
-    }
+    },
 }
