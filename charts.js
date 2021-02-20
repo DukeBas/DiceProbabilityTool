@@ -173,3 +173,7 @@ let defaultChartOptions = {
         }
     },
 }
+
+function addGraphInput(){
+
+}

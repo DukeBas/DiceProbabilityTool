@@ -1,6 +1,7 @@
 body {
     overflow: hidden; /* Hide scrollbars */
     font-family: Helvetica, sans-serif;
+    margin : 0;
 }
 
 .grid-container {
@@ -15,6 +16,9 @@ body {
 
 .Graph {
     grid-area: Graph;
+    position: relative;
+    height:90vh;
+    width:75vw
 }
 
 .Title {
@@ -24,23 +28,18 @@ body {
 
 .Links {
     grid-area: Links;
+    text-align: center;
+    width:25vw
 }
 
 .Parameters {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 0.4fr 1fr;
-    gap: 0px 0px;
-    grid-template-areas:
-    "Help-menu"
-    "Input";
     grid-area: Parameters;
 }
 
 .Help-menu {
-    grid-area: Help-menu;
+
 }
 
 .Input {
-    grid-area: Input;
+
 }
