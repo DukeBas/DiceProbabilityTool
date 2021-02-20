@@ -19,18 +19,18 @@ function probabilityDistribution(input) {
  * Turns a given occurrences array into a probability array
  * @param occ
  */
-function occurrencesToProbabilities(occ){
+function occurrencesToProbabilities(occ) {
     // we calculate the probabilities by dividing the amount per index by the total amount
     let total = 0;
-    for (let i = 0; i < occ.length; i++){
+    for (let i = 0; i < occ.length; i++) {
         total += occ[i];
     }
 
     // calculate probabilities by doing occurrence per sum divided by the total sum possibilities
     let probabilities = [];
-    for (let i = 0; i < occ.length; i++){
+    for (let i = 0; i < occ.length; i++) {
         probabilities[i] = occ[i] / total;
-        if (probabilities[i] === 0){
+        if (probabilities[i] === 0) {
             probabilities[i] = undefined;
         }
     }
@@ -97,14 +97,14 @@ function getOccurrencesDrop(dice, sides, dl, dh, arr) {
     }
 
     // check if we are in the first call
-    if (arr === undefined){
+    if (arr === undefined) {
         // we are in the first call
         arr = [];
     }
 
     // initialize occurrences
     let lenOccurrences = sides * (dice - dl - dh) + 1;
-    for (let i = 0; i < lenOccurrences; i++){
+    for (let i = 0; i < lenOccurrences; i++) {
         occurrences[i] = 0;
     }
 
@@ -112,10 +112,10 @@ function getOccurrencesDrop(dice, sides, dl, dh, arr) {
 
     // recursively generate arrays to simulate all possible scenarios
     // when the arrays are filled, do the dropping and add the sum for that scenario to occurrence array
-    if (arr.length + 1 >= dice){
+    if (arr.length + 1 >= dice) {
         // one die left to simulate out of the set
 
-        for (let i = 1; i < sides + 1; i++){
+        for (let i = 1; i < sides + 1; i++) {
             // calculate the sum of the set of dice with dropping
             let currentArr = arr.slice();
             currentArr.push(i);
@@ -127,7 +127,7 @@ function getOccurrencesDrop(dice, sides, dl, dh, arr) {
 
         // array to hold to occurrence arrays per part of the step
         let parts = [];
-        for (let i = 1; i < sides + 1; i++){
+        for (let i = 1; i < sides + 1; i++) {
             let currentArr = arr.slice();
             currentArr.push(i);
             parts.push(getOccurrencesDrop(dice, sides, dl, dh, currentArr));
@@ -136,8 +136,8 @@ function getOccurrencesDrop(dice, sides, dl, dh, arr) {
         // console.log(parts)
 
         // sum up all the parts to get the total
-        for (let i = 1; i < parts[0].length; i++){
-            for (let j = 0; j < parts.length; j++){
+        for (let i = 1; i < parts[0].length; i++) {
+            for (let j = 0; j < parts.length; j++) {
                 occurrences[i] += parts[j][i];
             }
         }
@@ -153,11 +153,11 @@ function getOccurrencesDrop(dice, sides, dl, dh, arr) {
  * @param dh number of highest dice to drop
  * @returns sum (int)
  */
-function rolledSetDrop(arr, dl, dh){
+function rolledSetDrop(arr, dl, dh) {
     let sum;
 
     // check if there will be any dice left after drop and keep
-    if (dl + dh >= arr.length){
+    if (dl + dh >= arr.length) {
         return sum;
     }
 
@@ -298,11 +298,22 @@ class Roller {
 
     /**
      * Calculate probability of each sum for our dice set
+     * @param percentage boolean if we want a percentage value (default false)
+     * @param precision is how many decimal places
      * @returns array with probabilities, index indicating the sum
      */
-    getProbabilities() {
+    getProbabilities(percentage, precision) {
         // get the dice we want the probability for
         let dice = this.getRolls();
+
+        // check if we want percentages
+        if (percentage === undefined) {
+            percentage = false;
+        }
+        // check if precision was defined, else default to 50 (way more than we can actually use so we just show all)
+        if (precision === undefined) {
+            precision = 50;
+        }
 
         // we add together the occurrence totals by adding one new roll distribution to the old set
         // per non-zero item in the array, we do this as adding a die is essentially having the same
@@ -312,7 +323,7 @@ class Roller {
         let occurrences = [];
 
         // combine all different dice rolls together
-        if (dice.length > 1){
+        if (dice.length > 1) {
             // we need to combine multiple types/sets of dice
 
             let occurrenceSet = [];
@@ -332,6 +343,22 @@ class Roller {
         }
 
         let probabilities = occurrencesToProbabilities(occurrences);
+
+        // if we want percentages, multiply everything by 100
+        if (percentage) {
+            for (let i = 0; i < probabilities.length; i++) {
+                probabilities[i] *= 100;
+            }
+        }
+
+        // work out precision
+        if (precision < 49) {
+            for (let i = 0; i < probabilities.length; i++) {
+                if (probabilities[i] !== undefined) {
+                    probabilities[i] = probabilities[i].toFixed(precision);
+                }
+            }
+        }
 
         return probabilities;
     }
