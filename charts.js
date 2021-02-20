@@ -174,6 +174,12 @@ let defaultChartOptions = {
     },
 }
 
+/**
+ * Adds a field to the Graph input on the HTML
+ */
 function addGraphInput(){
-
+    let newElement = document.createElement('div');
+    newElement.innerText = "test"
+    let graphInputs = document.getElementById("graphInputs");
+    graphInputs.append(newElement);
 }
