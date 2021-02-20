@@ -1,3 +1,8 @@
+body {
+    overflow: hidden; /* Hide scrollbars */
+    font-family: Helvetica, sans-serif;
+}
+
 .grid-container {
     display: grid;
     grid-template-columns: 1.5fr 0.5fr;
@@ -14,6 +19,7 @@
 
 .Title {
     grid-area: Title;
+    text-align: center;
 }
 
 .Links {
