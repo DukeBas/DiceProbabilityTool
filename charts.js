@@ -214,7 +214,11 @@ function getAllDiceInputs() {
 
     let inputs = document.getElementsByClassName("diceInput");
     for (let i = 0; i < inputs.length; i++) {
-        rollers.push(new Roller(inputs[i].value));
+        let inp = inputs[i].value;
+        // only look at non-empty fields
+        if (Boolean(inp)){
+            rollers.push(new Roller(inputs[i].value));
+        }
     }
 
     return rollers;
@@ -222,6 +226,7 @@ function getAllDiceInputs() {
 
 /**
  * Collects all dice and puts the appropriate chart on the page
+ * @returns boolean depending on if a chart was made
  */
 function goChart(){
     let inputs = getAllDiceInputs();
@@ -229,5 +234,11 @@ function goChart(){
     //TODO get options
     let options = {}
 
-    makeChart(makeChart(options));
+    // only make a chart if we have inputs
+    if (inputs.length > 0){
+        makeChart(makeChart(options));
+        return true;
+    }
+
+    return false;
 }

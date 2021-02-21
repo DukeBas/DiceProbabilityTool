@@ -29,7 +29,7 @@ body {
     grid-area: Links;
     text-align: center;
     width:24vw
-    /*TODO: fix that this div is always the right sizel, now it only works in a certain screen res range*/
+    /*TODO: fix that this div is always the right size, now it only works in a certain screen res range*/
 }
 
 .Parameters {
