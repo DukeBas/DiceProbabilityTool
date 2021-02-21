@@ -240,13 +240,14 @@ function goChart() {
     //TODO get options
     let options = {}
 
-    // remove old chart
-    if (chart !== undefined){
-        chart.destroy();
+    if (chart === undefined){
+        // first iteration, create new chart
+        // find where to place chart
+        let ctx = document.getElementById('canvas').getContext('2d');
+        chart = new Chart(ctx, makeChart(inputs));
+    } else {
+        // update chart with new configuration
+        chart.config = makeChart(inputs);
+        chart.update();
     }
-
-    // find where to place chart
-    let ctx = document.getElementById('canvas').getContext('2d');
-    // creating chart
-    chart = new Chart(ctx, makeChart(inputs));
 }
