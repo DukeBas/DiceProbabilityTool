@@ -190,9 +190,7 @@ function addGraphInput(input) {
         inputField.value = input;
     }
     // make sure chart is updated with new input
-    //TODO: fix this interactive version
-    // inputField.addEventListener("blur", goChart);
-    // inputField.addEventListener("focusout", goChart);
+    inputField.addEventListener("blur", goChart);
     newElement.append(inputField);
 
 

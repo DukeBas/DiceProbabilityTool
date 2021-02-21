@@ -248,7 +248,9 @@ class Roller {
             // check if the entry is not a dice but a modifier
             if (!entry.includes('d')) {
                 // modifier found
-                constr.modifier += parseInt(entry);
+                if (!isNaN(parseInt(entry))){
+                    constr.modifier += parseInt(entry);
+                }
             } else {
                 // found dice roll of some kind
                 //TODO FIX: RIGHT NOW WE ASSUME THAT THE DICE ROLL IS ALWAYS OF THE FORMAT xdy
@@ -340,6 +342,20 @@ class Roller {
             const d = parseInt(dice[0].dice); //amount of dice
             const s = parseInt(dice[0].sides);
             occurrences = getOccurrences(d, s);
+        }
+
+        //shift array based on modifier
+        if (this.modifier > 0){
+            // positive modifier, shift to right
+            for (let i = 0; i < this.modifier; i++){
+                occurrences.unshift(0);
+            }
+        } else if (this.modifier < 0) {
+            //WARNING: BREAKS WHEN NEGATIVE VALUES ARE A POSSIBLE OUTCOME
+            // positive modifier, shift to right
+            for (let i = 0; i < -1 * this.modifier; i++) {
+                occurrences.shift();
+            }
         }
 
         let probabilities = occurrencesToProbabilities(occurrences);
