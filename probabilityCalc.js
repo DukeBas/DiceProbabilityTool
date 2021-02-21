@@ -1,21 +1,4 @@
 /**
- * Takes string in standard dice notation and calculates the probability of each possible value
- * that the sum could be after rolling
- * @param input string consisting of modified standard dice notation (see README.md for details)
- * @returns array, where each value is the chance of the index being rolled
- */
-function probabilityDistribution(input) {
-    // turn the input into a roller object
-    let inputAsRoller = new Roller(input);
-
-    // console.log(inputAsRoller);
-
-    // calculate the actual probabilities
-    return inputAsRoller.getProbabilities();
-}
-
-
-/**
  * Turns a given occurrences array into a probability array
  * @param occ
  */
