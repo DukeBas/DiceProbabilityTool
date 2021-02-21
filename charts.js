@@ -72,6 +72,7 @@ function makeChart(rollers, options) {
     let minIndex = Number.MAX_SAFE_INTEGER; // will always get overridden
     let maxIndex = 0;
     let dataset = [];
+
     for (let i = 0; i < rollers.length; i++) {
         let dataObj = {}
 
@@ -185,10 +186,15 @@ function addGraphInput(input) {
     let inputField = document.createElement('input');
     inputField.className = "diceInput";
     // add a value to the input field if it was given
-    if (input !== undefined){
+    if (input !== undefined) {
         inputField.value = input;
     }
+    // make sure chart is updated with new input
+    //TODO: fix this interactive version
+    // inputField.addEventListener("blur", goChart);
+    // inputField.addEventListener("focusout", goChart);
     newElement.append(inputField);
+
 
     // button to delete the div
     let deleteButton = document.createElement('button');
@@ -216,7 +222,7 @@ function getAllDiceInputs() {
     for (let i = 0; i < inputs.length; i++) {
         let inp = inputs[i].value;
         // only look at non-empty fields
-        if (Boolean(inp)){
+        if (Boolean(inp)) {
             rollers.push(new Roller(inputs[i].value));
         }
     }
@@ -226,19 +232,15 @@ function getAllDiceInputs() {
 
 /**
  * Collects all dice and puts the appropriate chart on the page
- * @returns boolean depending on if a chart was made
  */
-function goChart(){
+function goChart() {
     let inputs = getAllDiceInputs();
 
     //TODO get options
     let options = {}
 
-    // only make a chart if we have inputs
-    if (inputs.length > 0){
-        makeChart(makeChart(options));
-        return true;
-    }
-
-    return false;
+    // find where to place chart
+    let ctx = document.getElementById('canvas').getContext('2d');
+    // creating chart
+    let chart = new Chart(ctx, makeChart(inputs));
 }
