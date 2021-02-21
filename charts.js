@@ -58,7 +58,7 @@ function makeChart(rollers, options) {
         }
 
         // add percentage signs y-axis
-        if (options.percentage){
+        if (options.percentage) {
             options.scales.yAxes[0].ticks.callback = defaultChartOptions.scales.yAxes[0].ticks.callback;
         }
     }
@@ -177,9 +177,45 @@ let defaultChartOptions = {
 /**
  * Adds a field to the Graph input on the HTML
  */
-function addGraphInput(){
+function addGraphInput() {
     let newElement = document.createElement('div');
-    newElement.innerText = "test"
+
+    // timestamp for testing purposes
+    let date = new Date();
+    let time = date.getTime();
+    newElement.innerText = time.toString();
+
+    // input field for dice
+    let inp = document.createElement('input');
+    inp.className = "diceInput";
+    newElement.append(inp);
+
+    // button to delete the div
+    let deleteButton = document.createElement('button');
+    deleteButton.innerText = "Del"
+    deleteButton.onclick = function () {
+        newElement.remove();
+    }
+    newElement.append(deleteButton);
+
+    // find the list of graphInputs on the page
     let graphInputs = document.getElementById("graphInputs");
+
+    // add our new item to that list
     graphInputs.append(newElement);
+}
+
+/**
+ * Get all the values from the possible graph/dice inputs
+ * @returns {[]}
+ */
+function getAllDiceInputs() {
+    let inputs = [];
+
+    let inputList = document.getElementsByClassName("diceInput");
+    for (let i = 0; i < inputList.length; i++) {
+        inputs.push(inputList[i].value);
+    }
+
+    return inputs;
 }
