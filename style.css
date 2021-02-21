@@ -1,7 +1,6 @@
 body {
     overflow: hidden; /* Hide scrollbars */
     font-family: Helvetica, sans-serif;
-    margin : 0;
 }
 
 .grid-container {
@@ -29,7 +28,8 @@ body {
 .Links {
     grid-area: Links;
     text-align: center;
-    width:25vw
+    width:24vw
+    /*TODO: fix that this div is always the right sizel, now it only works in a certain screen res range*/
 }
 
 .Parameters {
@@ -37,9 +37,19 @@ body {
 }
 
 .Help-menu {
-
+    text-align: center;
 }
 
 .Input {
+    text-align: center;
+    border : 2px solid;
+    overflow-y: scroll;
+    max-height: 80vh;
+    /*TODO: fix that the scrollbar appears at the right height, now it only works in a certain screen res range*/
+}
 
+.inputBox {
+    border : 1px solid;
+    margin : 5px;
+    padding : 5px;
 }

@@ -177,18 +177,18 @@ let defaultChartOptions = {
 /**
  * Adds a field to the Graph input on the HTML
  */
-function addGraphInput() {
+function addGraphInput(input) {
     let newElement = document.createElement('div');
-
-    // timestamp for testing purposes
-    let date = new Date();
-    let time = date.getTime();
-    newElement.innerText = time.toString();
+    newElement.className = "inputBox";
 
     // input field for dice
-    let inp = document.createElement('input');
-    inp.className = "diceInput";
-    newElement.append(inp);
+    let inputField = document.createElement('input');
+    inputField.className = "diceInput";
+    // add a value to the input field if it was given
+    if (input !== undefined){
+        inputField.value = input;
+    }
+    newElement.append(inputField);
 
     // button to delete the div
     let deleteButton = document.createElement('button');
@@ -206,16 +206,28 @@ function addGraphInput() {
 }
 
 /**
- * Get all the values from the possible graph/dice inputs
- * @returns {[]}
+ * Get all the values from the possible graph/dice inputs and put them in roller format
+ * @returns {[]} roller format
  */
 function getAllDiceInputs() {
-    let inputs = [];
+    let rollers = [];
 
-    let inputList = document.getElementsByClassName("diceInput");
-    for (let i = 0; i < inputList.length; i++) {
-        inputs.push(inputList[i].value);
+    let inputs = document.getElementsByClassName("diceInput");
+    for (let i = 0; i < inputs.length; i++) {
+        rollers.push(new Roller(inputs[i].value));
     }
 
-    return inputs;
+    return rollers;
+}
+
+/**
+ * Collects all dice and puts the appropriate chart on the page
+ */
+function goChart(){
+    let inputs = getAllDiceInputs();
+
+    //TODO get options
+    let options = {}
+
+    makeChart(makeChart(options));
 }
