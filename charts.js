@@ -1,3 +1,6 @@
+// global variable for the chart
+let chart;
+
 /**
  * takes a roller or array of rollers and returns chart paramters
  * @param rollers, a single roller or array of roller object
@@ -237,8 +240,13 @@ function goChart() {
     //TODO get options
     let options = {}
 
+    // remove old chart
+    if (chart !== undefined){
+        chart.destroy();
+    }
+
     // find where to place chart
     let ctx = document.getElementById('canvas').getContext('2d');
     // creating chart
-    let chart = new Chart(ctx, makeChart(inputs));
+    chart = new Chart(ctx, makeChart(inputs));
 }
