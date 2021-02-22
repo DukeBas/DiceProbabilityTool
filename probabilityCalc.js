@@ -236,32 +236,63 @@ class Roller {
                 }
             } else {
                 // found dice roll of some kind
-                //TODO FIX: RIGHT NOW WE ASSUME THAT THE DICE ROLL IS ALWAYS OF THE FORMAT xdy
-                let entrySplit = entry.split("d");
-
-                let dice = entrySplit[0];
-                let sides = entrySplit[1];
+                // use regular expressions to see what format we have
+                // standard dice notation
+                let aDb = /^([0-9])+([dD])([0-9])+$/g;
+                // standard dice notation with drop lowest
+                let aDbDc = /^([0-9])+([dD])([0-9])+([dD])([0-9])+$/g;
+                // standard dice notation with drop lowest
+                let aDbDLc = /^([0-9])+([dD])([0-9])+([dD][lL])([0-9])+$/g;
+                // standard dice notation with drop highest
+                let aDbDHc = /^([0-9])+([dD])([0-9])+([dD][hH])([0-9])+$/g;
+                // standard dice notation with drop lowest and drop highest
+                let aDbDLcDHd = /^([0-9])+([dD])([0-9])+([dD][lL])([0-9])+([dD][hH])([0-9])+$/g;
+                let aDbDHcDLd = /^([0-9])+([dD])([0-9])+([dD][hH])([0-9])+([dD][lL])([0-9])+$/g;
 
                 //TODO implement custom dice part
+
+                // set default variables that we then override when necessary
+                let dice = 0;
+                let sides = 0;
                 let custom = false
                 let customConfig = false
-
-                //TODO implement keep & drop
-                // d = drop lowest, dl = drop, dh = drop highest
                 let keep = 0;
                 let drop = 0;
 
+                // see what format we have
+                if (entry.match(aDb)){
+                    // standard dice notation
+                    let entrySplit = entry.split("d");
+                    dice = entrySplit[0];
+                    sides = entrySplit[1];
+                } else if (entry.match(aDbDc) || entry.match(aDbDLc)){
+                    // standard dice notation with drop lowest
+                    console.log("2")
+                } else if (entry.match(aDbDHc)){
+                    // standard dice notation with drop highest
+                    console.log("3")
+                } else if (entry.match(aDbDLcDHd) || entry.match(aDbDHcDLd)){
+                    // standard dice notation with drop lowest and drop highest
+                    console.log("4")
+                } else {
+                    // we could not determine format
+                    console.log("Something went wrong with input: " + entry);
+                }
+
+
+                // create an object of the information we got
                 let diceObj = {
                     dice: dice,
                     sides: sides,
                     keep: keep,
                     drop: drop,
-                    custom: custom,
-                    customConfig: customConfig
+                    custom: custom, // if we have a dice with custom sides
+                    customConfig: customConfig // configuration of sides if we have a custom die
                 };
-
+                // add it to the rolls
                 constr.rolls.push(diceObj);
             }
+
         });
     }
 
