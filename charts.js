@@ -202,6 +202,7 @@ function addGraphInput(input) {
     deleteButton.innerText = "Del"
     deleteButton.onclick = function () {
         newElement.remove();
+        goChart(); //update chart
     }
     newElement.append(deleteButton);
 
@@ -225,7 +226,7 @@ function getAllDiceInputs() {
         // only look at non-empty fields
         if (Boolean(inp)) {
             let roller = new Roller(inputs[i].value);
-            if (roller !== false){
+            if (roller.getValidity()){
                 rollers.push(new Roller(inputs[i].value));
             }
         }
@@ -243,7 +244,7 @@ function goChart() {
     //TODO get options
     let options = {}
 
-    if (chart === undefined){
+    if (chart === undefined) {
         // first iteration, create new chart
         // find where to place chart
         let ctx = document.getElementById('canvas').getContext('2d');

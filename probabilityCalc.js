@@ -210,6 +210,7 @@ class Roller {
         this.rolls = [];
         this.modifier = 0;
         this.originalInput = input;
+        this.valid = true; // used for making sure only workable rollers are used
 
         // remove any spaces from the input
         input = input.replace(/\s+/g, '');
@@ -282,9 +283,8 @@ class Roller {
                 } else {
                     // we could not determine format
                     console.log("Something went wrong with input: " + entry);
-                    return false;
+                    this.valid = false;
                 }
-
 
                 // create an object of the information we got
                 let diceObj = {
@@ -300,6 +300,11 @@ class Roller {
             }
 
         });
+
+        // check if we have any rolls
+        if (this.rolls.length === 0){
+            this.valid = false;
+        }
     }
 
     addRoll(x) {
@@ -316,6 +321,10 @@ class Roller {
 
     getModifier() {
         return this.modifier;
+    }
+
+    getValidity() {
+        return this.valid;
     }
 
     /**
