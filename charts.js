@@ -224,7 +224,10 @@ function getAllDiceInputs() {
         let inp = inputs[i].value;
         // only look at non-empty fields
         if (Boolean(inp)) {
-            rollers.push(new Roller(inputs[i].value));
+            let roller = new Roller(inputs[i].value);
+            if (roller !== false){
+                rollers.push(new Roller(inputs[i].value));
+            }
         }
     }
 

@@ -201,6 +201,11 @@ function combineOccurrenceArrays(x, y) {
  * Object to store a set of dice together with a modifier in
  */
 class Roller {
+    /**
+     * constructor function
+     * @param input
+     * @returns false if building fails
+     */
     constructor(input) {
         this.rolls = [];
         this.modifier = 0;
@@ -277,6 +282,7 @@ class Roller {
                 } else {
                     // we could not determine format
                     console.log("Something went wrong with input: " + entry);
+                    return false;
                 }
 
 
