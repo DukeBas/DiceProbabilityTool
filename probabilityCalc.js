@@ -139,7 +139,7 @@ function getOccurrencesDrop(dice, sides, dl, dh, arr) {
 function rolledSetDrop(arr, dl, dh) {
     let sum;
 
-    // check if there will be any dice left after drop and keep
+    // check if there will be any dice left after dropping
     if (dl + dh >= arr.length) {
         return sum;
     }
@@ -262,8 +262,8 @@ class Roller {
                 let sides = 0;
                 let custom = false
                 let customConfig = false
-                let keep = 0;
-                let drop = 0;
+                let dropL = 0;
+                let dropH = 0;
 
                 // see what format we have
                 if (entry.match(aDb)){
@@ -273,10 +273,18 @@ class Roller {
                     sides = entrySplit[1];
                 } else if (entry.match(aDbDc) || entry.match(aDbDLc)){
                     // standard dice notation with drop lowest
-                    console.log("2")
+                    let entrySplit = entry.split(/[dDlL]/);
+
+                    dice = entrySplit[0];
+                    sides = entrySplit[1];
+                    dropL = entrySplit[entrySplit.length - 1];
                 } else if (entry.match(aDbDHc)){
                     // standard dice notation with drop highest
-                    console.log("3")
+                    let entrySplit = entry.split(/[dDhH]/);
+
+                    dice = entrySplit[0];
+                    sides = entrySplit[1];
+                    dropH = entrySplit[entrySplit.length - 1];
                 } else if (entry.match(aDbDLcDHd) || entry.match(aDbDHcDLd)){
                     // standard dice notation with drop lowest and drop highest
                     console.log("4")
@@ -290,15 +298,14 @@ class Roller {
                 let diceObj = {
                     dice: dice,
                     sides: sides,
-                    keep: keep,
-                    drop: drop,
+                    dropL: dropL,
+                    dropH: dropH,
                     custom: custom, // if we have a dice with custom sides
                     customConfig: customConfig // configuration of sides if we have a custom die
                 };
                 // add it to the rolls
                 constr.rolls.push(diceObj);
             }
-
         });
 
         // check if we have any rolls
@@ -359,9 +366,18 @@ class Roller {
 
             let occurrenceSet = [];
             dice.forEach(function (diceSet) {
-                const d = parseInt(diceSet.dice);
+                const d = parseInt(diceSet.dice); //amount of dice
                 const s = parseInt(diceSet.sides);
-                occurrenceSet.push(getOccurrences(d, s));
+                const dL = parseInt(diceSet.dropL);
+                const dH = parseInt(diceSet.dropH);
+
+                if (dL + dH === 0){
+                    // no dropping
+                    occurrenceSet.push(getOccurrences(d, s));
+                } else {
+                    // dropping
+                    occurrenceSet.push(getOccurrencesDrop(d, s, dL, dH));
+                }
             });
 
             // combine all the occurrences together
@@ -370,7 +386,17 @@ class Roller {
             // single type of dice
             const d = parseInt(dice[0].dice); //amount of dice
             const s = parseInt(dice[0].sides);
-            occurrences = getOccurrences(d, s);
+            const dL = parseInt(dice[0].dropL);
+            const dH = parseInt(dice[0].dropH);
+
+            // we don't always use the dropping function as it is a lot less efficient
+            if (dL + dH === 0) {
+                // no dropping
+                occurrences = getOccurrences(d, s);
+            } else {
+                // dropping
+                occurrences = getOccurrencesDrop(d, s, dL, dH);
+            }
         }
 
         //shift array based on modifier
