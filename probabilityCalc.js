@@ -204,13 +204,13 @@ class Roller {
     /**
      * constructor function
      * @param input
-     * @returns false if building fails
      */
     constructor(input) {
         this.rolls = [];
         this.modifier = 0;
         this.originalInput = input;
         this.valid = true; // used for making sure only workable rollers are used
+        this.color = "#555555" // used for the color of the line in a graph
 
         // remove any spaces from the input
         input = input.replace(/\s+/g, '');
@@ -332,6 +332,14 @@ class Roller {
 
     getValidity() {
         return this.valid;
+    }
+
+    getColor() {
+        return this.color;
+    }
+
+    setColor(col) {
+        this.color = col;
     }
 
     /**

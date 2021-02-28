@@ -1,7 +1,7 @@
 /**
  * function called when body has been loaded
  */
-function init(){
+function init() {
     // for testing
     // addGraphInput("1d20");
     // addGraphInput("2d10");

@@ -106,8 +106,11 @@ function makeChart(rollers, options) {
             maxIndex = indexLastEntry;
         }
 
-        //TODO line width?
         dataObj.borderWidth = 1;
+        let col = rollers[i].getColor();
+        dataObj.borderColor = col;
+        dataObj.fill = true;
+        dataObj.backgroundColor = hexToRGB(col, 0.3);
 
         dataset.push(dataObj);
     }
@@ -185,9 +188,19 @@ function addGraphInput(input) {
     let newElement = document.createElement('div');
     newElement.className = "inputBox";
 
+    // color input
+    let colorpicker = document.createElement('input');
+    colorpicker.type = "color";
+    // generate random color //TODO have list of colors to pick from
+    let randCol = randomHexColor();
+    colorpicker.value = randCol;
+    colorpicker.id = "color";
+    colorpicker.addEventListener("change", goChart, false);
+    newElement.append(colorpicker);
+
     // input field for dice
     let inputField = document.createElement('input');
-    inputField.className = "diceInput";
+    inputField.id = "diceInput";
     // add a value to the input field if it was given
     if (input !== undefined) {
         inputField.value = input;
@@ -220,16 +233,56 @@ function addGraphInput(input) {
 function getAllDiceInputs() {
     let rollers = [];
 
-    let inputs = document.getElementsByClassName("diceInput");
+    // let inputs = document.getElementsByClassName("diceInput");
+    // for (let i = 0; i < inputs.length; i++) {
+    //     let inp = inputs[i].value;
+    //     // only look at non-empty fields
+    //     if (Boolean(inp)) {
+    //         let roller = new Roller(inputs[i].value);
+    //         if (roller.getValidity()) {
+    //             rollers.push(new Roller(inputs[i].value));
+    //         }
+    //     }
+    // }
+
+    let inputs = document.getElementsByClassName("inputBox");
     for (let i = 0; i < inputs.length; i++) {
-        let inp = inputs[i].value;
-        // only look at non-empty fields
-        if (Boolean(inp)) {
-            let roller = new Roller(inputs[i].value);
-            if (roller.getValidity()){
-                rollers.push(new Roller(inputs[i].value));
+        let inputBox = inputs[i];
+
+        // find input field and get it's value
+        let inputField;
+        for (let i = 0; i < inputBox.children.length; i++){
+            if (inputBox.children[i].id === "diceInput") {
+                inputField = inputBox.children[i];
             }
         }
+        let diceInput = inputField.value;
+
+        // get color
+        let colorPick;
+        for (let i = 0; i < inputBox.children.length; i++){
+            if (inputBox.children[i].id === "color") {
+                colorPick = inputBox.children[i];
+            }
+        }
+        let color = colorPick.value;
+
+        // only look at non-empty fields
+        if (Boolean(diceInput)) {
+            let roller = new Roller(diceInput);
+            roller.setColor(color);
+            if (roller.getValidity()) {
+                rollers.push(roller);
+            }
+        }
+
+    //     // only look at non-empty fields
+    //     if (Boolean(inp)) {
+    //         let roller = new Roller(inputs[i].value);
+    //         if (roller.getValidity()) {
+    //             rollers.push(new Roller(inputs[i].value));
+    //         }
+    //     }
     }
 
     return rollers;
@@ -254,4 +307,52 @@ function goChart() {
         chart.config = makeChart(inputs);
         chart.update();
     }
+}
+
+/**
+ * @returns random color in hex format as string
+ */
+function randomHexColor() {
+    let randCol = "#";
+    let charSet = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "A", "B", "C", "D", "E", "F"];
+    for (let i = 0; i < 6; i++) {
+        randCol += charSet[Math.floor(Math.random()*charSet.length)];
+    }
+    return randCol;
+}
+
+/**
+ * Turns a given hex color into the same color but in rgb format with possible opacity extra
+ * @param hex
+ * @param opacity
+ * @returns color as rgb(a)
+ */
+function hexToRGB(hex, opacity) {
+    let rgb = "rgb(";
+
+    // remove #
+    hex = hex.substring(1);
+
+    // red
+    let r = hex.slice(0, 2);
+    rgb += parseInt(r, 16);
+    rgb += ", ";
+
+    // green
+    let g = hex.slice(2, 4);
+    rgb += parseInt(g, 16);
+    rgb += ", ";
+
+    // blue
+    let b = hex.slice(4, 6);
+    rgb += parseInt(b, 16);
+
+    // add opacity if it was specified
+    if (opacity !== undefined){
+        rgb += ", ";
+        rgb += opacity;
+    }
+
+    rgb += ")"
+    return rgb;
 }
