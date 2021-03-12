@@ -29,6 +29,7 @@ function makeChart(rollers, options) {
         options.percentage = defaultChartOptions.percentage;
         options.precision = defaultChartOptions.precision;
         options.tooltips = defaultChartOptions.tooltips;
+        // console.log("No options given!");
     } else {
         // at least some options were given
         // check for each option if a value was defined, else go to some default value
@@ -69,6 +70,13 @@ function makeChart(rollers, options) {
     options.responsive = true;  // scales with div
     options.maintainAspectRatio = false;  // scales with div
 
+    //TODO: fix; should set 10 as the minimum but currently broken
+    // options.scales.xAxes = [{
+    //     ticks: {
+    //         min: 10
+    //     }
+    // }]
+
 
     // add the right parameters for each roller / each line in graph
     // also get lowest non-zero value and max value from probability
@@ -80,7 +88,7 @@ function makeChart(rollers, options) {
         let dataObj = {}
 
         // label for this roller
-        dataObj.label = rollers[i].originalInput;
+        dataObj.label = rollers[i].getName();
 
         // actual probabilities for the roller
         let probability = rollers[i].getProbabilities(options.percentage, options.precision);
@@ -159,7 +167,7 @@ function makeChart(rollers, options) {
 // default chart options for when certain options are not defined
 let defaultChartOptions = {
     percentage: true,
-    precision: 2,
+    precision: 3,
     // y-axis always starts at 0 and % on y-axis
     scales: {
         yAxes: [{
@@ -170,6 +178,12 @@ let defaultChartOptions = {
                 },
             }
         }]
+        // ,
+        // xAxes: [{
+        //     ticks: {
+        //         min: Math.min(mostNegativeValue, options.ticks.suggestedMin)
+        //     }
+        // }]
     },
     // for percentage sign
     tooltips: {
@@ -184,7 +198,7 @@ let defaultChartOptions = {
 /**
  * Adds a field to the Graph input on the HTML
  */
-function addGraphInput(input) {
+function addGraphInput(input, name) {
     let newElement = document.createElement('div');
     newElement.className = "inputBox";
 
@@ -192,8 +206,7 @@ function addGraphInput(input) {
     let colorpicker = document.createElement('input');
     colorpicker.type = "color";
     // generate random color //TODO have list of colors to pick from
-    let randCol = randomHexColor();
-    colorpicker.value = randCol;
+    colorpicker.value = randomHexColor();
     colorpicker.id = "color";
     colorpicker.addEventListener("change", goChart, false);
     newElement.append(colorpicker);
@@ -205,10 +218,22 @@ function addGraphInput(input) {
     if (input !== undefined) {
         inputField.value = input;
     }
+    inputField.placeholder = "dice input";
     // make sure chart is updated with new input
     inputField.addEventListener("blur", goChart);
     newElement.append(inputField);
 
+    //input field for name
+    let nameField = document.createElement('input');
+    nameField.id = "name";
+    // add a value to the input field if it was given
+    if (name !== undefined) {
+        nameField.value = name;
+    }
+    nameField.placeholder = "Name";
+    // make sure chart is updated with new input
+    nameField.addEventListener("blur", goChart);
+    newElement.append(nameField);
 
     // button to delete the div
     let deleteButton = document.createElement('button');
@@ -233,25 +258,13 @@ function addGraphInput(input) {
 function getAllDiceInputs() {
     let rollers = [];
 
-    // let inputs = document.getElementsByClassName("diceInput");
-    // for (let i = 0; i < inputs.length; i++) {
-    //     let inp = inputs[i].value;
-    //     // only look at non-empty fields
-    //     if (Boolean(inp)) {
-    //         let roller = new Roller(inputs[i].value);
-    //         if (roller.getValidity()) {
-    //             rollers.push(new Roller(inputs[i].value));
-    //         }
-    //     }
-    // }
-
     let inputs = document.getElementsByClassName("inputBox");
     for (let i = 0; i < inputs.length; i++) {
         let inputBox = inputs[i];
 
         // find input field and get it's value
         let inputField;
-        for (let i = 0; i < inputBox.children.length; i++){
+        for (let i = 0; i < inputBox.children.length; i++) {
             if (inputBox.children[i].id === "diceInput") {
                 inputField = inputBox.children[i];
             }
@@ -260,29 +273,30 @@ function getAllDiceInputs() {
 
         // get color
         let colorPick;
-        for (let i = 0; i < inputBox.children.length; i++){
+        for (let i = 0; i < inputBox.children.length; i++) {
             if (inputBox.children[i].id === "color") {
                 colorPick = inputBox.children[i];
             }
         }
         let color = colorPick.value;
 
-        // only look at non-empty fields
+        // get name
+        let nameField;
+        for (let i = 0; i < inputBox.children.length; i++) {
+            if (inputBox.children[i].id === "name") {
+                nameField = inputBox.children[i];
+            }
+        }
+
+        let name = nameField.value;
+        // only look at non-empty dice fields
         if (Boolean(diceInput)) {
-            let roller = new Roller(diceInput);
+            let roller = new Roller(diceInput, name);
             roller.setColor(color);
             if (roller.getValidity()) {
                 rollers.push(roller);
             }
         }
-
-    //     // only look at non-empty fields
-    //     if (Boolean(inp)) {
-    //         let roller = new Roller(inputs[i].value);
-    //         if (roller.getValidity()) {
-    //             rollers.push(new Roller(inputs[i].value));
-    //         }
-    //     }
     }
 
     return rollers;
@@ -295,16 +309,16 @@ function goChart() {
     let inputs = getAllDiceInputs();
 
     //TODO get options
-    let options = {}
+    let options;
 
     if (chart === undefined) {
         // first iteration, create new chart
         // find where to place chart
         let ctx = document.getElementById('canvas').getContext('2d');
-        chart = new Chart(ctx, makeChart(inputs));
+        chart = new Chart(ctx, makeChart(inputs, options));
     } else {
         // update chart with new configuration
-        chart.config = makeChart(inputs);
+        chart.config = makeChart(inputs, options);
         chart.update();
     }
 }
@@ -316,7 +330,7 @@ function randomHexColor() {
     let randCol = "#";
     let charSet = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "A", "B", "C", "D", "E", "F"];
     for (let i = 0; i < 6; i++) {
-        randCol += charSet[Math.floor(Math.random()*charSet.length)];
+        randCol += charSet[Math.floor(Math.random() * charSet.length)];
     }
     return randCol;
 }
@@ -348,7 +362,7 @@ function hexToRGB(hex, opacity) {
     rgb += parseInt(b, 16);
 
     // add opacity if it was specified
-    if (opacity !== undefined){
+    if (opacity !== undefined) {
         rgb += ", ";
         rgb += opacity;
     }

@@ -203,14 +203,22 @@ function combineOccurrenceArrays(x, y) {
 class Roller {
     /**
      * constructor function
-     * @param input
+     * @param input for dice
+     * @param name, used in labeling
      */
-    constructor(input) {
+    constructor(input, name) {
         this.rolls = [];
         this.modifier = 0;
         this.originalInput = input;
         this.valid = true; // used for making sure only workable rollers are used
         this.color = "#555555" // used for the color of the line in a graph
+        this.filled = false // used for determining whether to fill the area under the graph
+        this.name = name; // used for labeling on the graph
+
+        // if no name was given, set input as name
+        if (!Boolean(name)){
+            this.name = this.originalInput;
+        }
 
         // remove any spaces from the input
         input = input.replace(/\s+/g, '');
@@ -285,10 +293,27 @@ class Roller {
                     dice = entrySplit[0];
                     sides = entrySplit[1];
                     dropH = entrySplit[entrySplit.length - 1];
-                } else if (entry.match(aDbDLcDHd) || entry.match(aDbDHcDLd)){
+                } else if (entry.match(aDbDLcDHd)){
                     // standard dice notation with drop lowest and drop highest
-                    console.log("4")
-                } else {
+                    let entrySplit = entry.split(/[dDhHlL]/);
+                    // remove empty parts from list
+                    entrySplit = entrySplit.filter(Boolean);
+
+                    dice = entrySplit[0];
+                    sides = entrySplit[1];
+                    dropL = entrySplit[2];
+                    dropH = entrySplit[3];
+                } else if (entry.match(aDbDHcDLd)){
+                    // standard dice notation with drop lowest and drop highest
+                    let entrySplit = entry.split(/[dDhHlL]/);
+                    // remove empty parts from list
+                    entrySplit = entrySplit.filter(Boolean);
+
+                    dice = entrySplit[0];
+                    sides = entrySplit[1];
+                    dropH = entrySplit[2];
+                    dropL = entrySplit[3];
+                }else {
                     // we could not determine format
                     console.log("Something went wrong with input: " + entry);
                     this.valid = false;
@@ -340,6 +365,10 @@ class Roller {
 
     setColor(col) {
         this.color = col;
+    }
+
+    getName(){
+        return this.name;
     }
 
     /**

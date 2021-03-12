@@ -1,6 +1,8 @@
 body {
     overflow: hidden; /* Hide scrollbars */
     font-family: Helvetica, sans-serif;
+    background-color: white;
+    margin: 0;
 }
 
 .grid-container {
@@ -16,19 +18,22 @@ body {
 .Graph {
     grid-area: Graph;
     position: relative;
-    height:90vh;
+    border : 1px solid;
+    height:92vh;
     width:75vw
 }
 
 .Title {
     grid-area: Title;
+    border : 1px solid;
     text-align: center;
 }
 
 .Links {
     grid-area: Links;
+    border : 1px solid;
     text-align: center;
-    width:24vw
+    width:24.75vw
     /*TODO: fix that this div is always the right size, now it only works in a certain screen res range*/
 }
 
@@ -42,9 +47,9 @@ body {
 
 .Input {
     text-align: center;
-    border : 2px solid;
+    border : 1px solid;
     overflow-y: scroll;
-    max-height: 80vh;
+    max-height: 92vh;
     /*TODO: fix that the scrollbar appears at the right height, now it only works in a certain screen res range*/
 }
 
