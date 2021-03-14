@@ -18,7 +18,7 @@ body {
 .Graph {
     grid-area: Graph;
     position: relative;
-    box-shadow: inset 0 0 10px #311b0b;
+    /*box-shadow: inset 0 0 10px #311b0b;*/
     height:92vh;
     width:75vw
 }
